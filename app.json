@@ -1,0 +1,16 @@
+{
+  "name": "Authenticapp",
+  "description": "Application Authenticapp",
+  "logo": "https://avatars3.githubusercontent.com/u/788200",
+  "repository": "https://github.com/sergiosouzalima/authenticapp"
+  "keywords": [
+    "RSpec",
+    "Bootstrap",
+    "Ruby",
+    "Rails"
+  ],
+  "scripts": {},
+  "env": {
+    "RAILS_ENV": "production"
+  }
+}
