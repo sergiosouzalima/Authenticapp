@@ -13,21 +13,21 @@ class UsersController < ApplicationController
   end
 
   def authenticate
-    user = User.authenticate(user_params[:email], user_params[:password])
-    if user && user.failed_attempts == 0
+    user = User.authenticate(params[:user][:email], params[:user][:password])
+    if user && user.password == params[:user][:password] && user.failed_attempts < user.attempts
       session[:user_id] = user.id
       flash[:notice] = "Bem vindo #{user.email}!"
     else
       message_to_user = "Usuário ou senha inválida."
       if user
-        if user.failed_attempts >= 5
+        if user.failed_attempts >= user.attempts
           attempts_info = "Usuário #{user.email} bloqueado!"
         else
           attempts_info = "Restam #{user.failed_attempts}/#{user.attempts} tentativas"
         end
-        flash[:error] = message_to_user + " " + attempts_info
+        flash[:error] = message_to_user + ' ' + attempts_info
       else
-        flash[:user] = message_to_user
+        flash[:error] = message_to_user
       end
     end
     redirect_to root_url

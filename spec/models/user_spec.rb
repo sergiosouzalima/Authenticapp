@@ -134,8 +134,8 @@ RSpec.describe User, type: :model do
     context 'when user has reached maximum invalid attempts' do
       before :each do
         @attempts = 5
-        @email = 'john_smith@gmail.net'; @password = "123456"; @failed_attempts = @attempts + 1
-        @user  = User.create( email: @email, password: @password )
+        @email    = 'john_smith@gmail.net'; @password = "123456"; @failed_attempts = @attempts + 1
+        @user     = User.create( email: @email, password: @password )
         @user.update failed_attempts: @failed_attempts
       end
       it "returns User instance" do
