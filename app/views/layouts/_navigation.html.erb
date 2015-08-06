@@ -14,6 +14,10 @@
       <ul class="nav navbar-nav">
         <%= render 'layouts/navigation_links' %>
       </ul>
+      <% if @current_user %>
+        <%= link_to "#{@current_user.email}", "#", class: 'navbar-brand'%>
+        <%= link_to "Sair", logout_path, class: 'navbar-brand'%>
+      <% end %>
     </div>
   </div>
 </nav>

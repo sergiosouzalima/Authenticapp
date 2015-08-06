@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy]
 
   def index
-    if current_user
+    if @current_user = current_user
       @users = User.order(:email)
     else
       redirect_to login_path
@@ -10,6 +10,15 @@ class UsersController < ApplicationController
   end
 
   def login
+  end
+
+  def logout
+    session[:user_id] = nil
+    redirect_to root_url, alert: "Logout realizado com sucesso!"
+  end
+
+  def show
+    @current_user = current_user
   end
 
   def authenticate
