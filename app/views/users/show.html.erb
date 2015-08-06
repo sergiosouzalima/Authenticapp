@@ -1,2 +1,3 @@
 <h3>User</h3>
 <p>Email: <%= @user.email if @user.email %></p>
+<p>Tentativas invalidas de login: <%= @user.failed_attempts if @user.failed_attempts %></p>

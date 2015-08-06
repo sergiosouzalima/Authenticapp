@@ -131,6 +131,26 @@ RSpec.describe User, type: :model do
   end
 
   context '#authenticate' do
+    context 'when user has reached maximum invalid attempts' do
+      before :each do
+        @attempts = 5
+        @email = 'john_smith@gmail.net'; @password = "123456"; @failed_attempts = @attempts + 1
+        @user  = User.create( email: @email, password: @password )
+        @user.update failed_attempts: @failed_attempts
+      end
+      it "returns User instance" do
+        expect(User.authenticate(@user.email, @user.password)).to be_kind_of(User)
+      end
+      it "returns User record, with correct attributes" do
+        user = User.authenticate(@user.email, @user.password)
+        expect(user.email).to    eq @email
+        expect(user.password).to eq @password
+        expect(user.failed_attempts).to be >= @attempts
+      end
+      it "returns failed_attempts >= 5" do
+        expect(User.authenticate(@user.email, @user.password).failed_attempts).to be >= @attempts
+      end
+    end
     context 'when valid parameters' do
       before :each do
         @attempts = 5
@@ -155,7 +175,7 @@ RSpec.describe User, type: :model do
       it "returns failed_attempts equal to zero" do
         expect(User.authenticate(@user_01.email, @user_01.password).failed_attempts).to eq 0
       end
-       context 'and wrong password' do
+      context 'and wrong password' do
         before :each do
           @email = 'john_smith@gmail.net'; @password = "123456"
           @user  = User.create( email: @email, password: @password )
@@ -175,20 +195,20 @@ RSpec.describe User, type: :model do
         end
       end
     end
-  end
-  context 'when invalid parameters' do
-    context "when at least one parameter isn't present" do
-      it "returns nil" do
-        user = User.authenticate( nil, nil )
-        expect(user).to be_nil
+    context 'when invalid parameters' do
+      context "and at least one parameter isn't present" do
+        it "returns nil" do
+          user = User.authenticate( nil, nil )
+          expect(user).to be_nil
+        end
       end
-    end
-    context "when user doesn't exist" do
-      it "returns nil" do
-        email = 'john_smith@gmail.net'; password = "123456"
-        User.create( email: 'sergio@gmail.com', password: password )
-        result = User.authenticate( email, password )
-        expect(result).to be_nil
+      context "and user doesn't exist" do
+        it "returns nil" do
+          email = 'john_smith@gmail.net'; password = "123456"
+          User.create( email: 'sergio@gmail.com', password: password )
+          result = User.authenticate( email, password )
+          expect(result).to be_nil
+        end
       end
     end
   end

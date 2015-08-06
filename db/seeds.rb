@@ -8,11 +8,11 @@
 puts "####### deleting all users"
 User.delete_all
 
-(1..10).each do |e|
-  fake_email = Faker::Internet.email
-  password   = "123456"
-  puts "####### creating user #{e}, #{fake_email}, password: #{password}"
-  User.create( email: fake_email,
+password   = "123456"
+user = ['admin@gmail.com','superuser@yahoo.com.br','john@uol.com.br']
+user.each_with_index do |v,k|
+  puts "####### creating user #{k+1}, #{v}, password: #{password}"
+  User.create( email: v,
               password: password)
 end
 puts ""
