@@ -28,6 +28,8 @@ group :development, :test do
   gem 'faker'
   gem 'pry-rails'
   gem 'pry-rescue'
+  gem 'pry-nav'
+  gem 'shoulda-matchers'
   gem 'rspec-rails'
   gem 'sqlite3'
 end
