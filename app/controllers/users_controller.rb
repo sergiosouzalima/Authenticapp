@@ -31,10 +31,11 @@ class UsersController < ApplicationController
       if user
         if user.failed_attempts >= user.attempts
           attempts_info = "Usuário #{user.email} bloqueado!"
+          flash[:error] = attempts_info
         else
           attempts_info = "Restam #{user.failed_attempts}/#{user.attempts} tentativas"
+          flash[:error] = message_to_user + ' ' + attempts_info
         end
-        flash[:error] = message_to_user + ' ' + attempts_info
       else
         flash[:error] = message_to_user
       end

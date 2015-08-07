@@ -100,7 +100,7 @@ describe UsersController do
             expect(response).to redirect_to(:root)
           end
           it "returns 'Usuario bloqueado' message to the user" do
-            expect(flash[:error]).to eq "Usuário ou senha inválida. Usuário #{@user.email} bloqueado!"
+            expect(flash[:error]).to eq "Usuário #{@user.email} bloqueado!"
           end
         end
         context "and failed attempts has exceeded maximum attempts" do
@@ -115,7 +115,7 @@ describe UsersController do
             expect(response).to redirect_to(:root)
           end
           it "returns 'Usuario bloqueado' message to the user" do
-            expect(flash[:error]).to eq "Usuário ou senha inválida. Usuário #{@user.email} bloqueado!"
+            expect(flash[:error]).to eq "Usuário #{@user.email} bloqueado!"
           end
         end
       end
