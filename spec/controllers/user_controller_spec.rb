@@ -32,6 +32,22 @@ describe UsersController do
   end
 
   describe "#authenticate (POST)" do
+    context "when valid parameters" do
+      context "User exists & password is ok" do
+        before do
+          @email  = 'john_smith@gmail.net'; password = "123456"
+          params = {user: {email: @email, password: password} }
+          user   = User.create( email: @email, password: password )
+          post :authenticate, params
+        end
+        it "redirects to root" do
+          expect(response).to redirect_to(:root)
+        end
+        it "returns 'Bem vindo...' message to the user" do
+          expect(flash[:notice]).to eq "Bem vindo #{@email}!"
+        end
+      end
+    end
     context "when invalid parameters" do
       context "user_params is empty" do
         before do
@@ -71,7 +87,7 @@ describe UsersController do
             expect(response).to redirect_to(:root)
           end
           it "returns 'Usuario ou senha invalida' message to the user" do
-            expect(flash[:error]).to eq "Usuário ou senha inválida."
+            expect(flash[:error]).to eq "Usuário ou senha inválida. Restam 1/5 tentativas"
           end
         end
         context "and password is wrong" do

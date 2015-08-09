@@ -138,76 +138,82 @@ RSpec.describe User, type: :model do
         @user     = User.create( email: @email, password: @password )
         @user.update failed_attempts: @failed_attempts
       end
-      it "returns User instance" do
-        expect(User.authenticate(@user.email, @user.password)).to be_kind_of(User)
+      it "returns an Array" do
+        expect(User.authenticate(@user.email, @user.password)).to be_kind_of(Array)
       end
-      it "returns User record, with correct attributes" do
-        user = User.authenticate(@user.email, @user.password)
-        expect(user.email).to    eq @email
-        expect(user.password).to eq @password
-        expect(user.failed_attempts).to be >= @attempts
+      it "returns an Array with two positions" do
+        result = User.authenticate(@user.email, @user.password)
+        expect(result.length).to eq 2
       end
       it "returns failed_attempts >= 5" do
-        expect(User.authenticate(@user.email, @user.password).failed_attempts).to be >= @attempts
+        User.authenticate(@user.email, @user.password)
+        expect(User.find_by_email(@user.email).failed_attempts).to be >= @attempts
       end
     end
     context 'when valid parameters' do
       before :each do
-        @attempts = 5
-        @email_01 = 'john_smith@gmail.net'; @password_01 = "123456"
-        @email_02 = 'maria-souza@net.net' ; @password_02 = "1234567890"
-        @email_03 = 'ana.lima@net.com.br' ; @password_03 = "abdcef-2015"
-        @user_01  = User.create( email: @email_01, password: @password_01 )
-        @user_02  = User.create( email: @email_02, password: @password_02 )
-        @user_03  = User.create( email: @email_03, password: @password_03 )
+        @attempts  = 5
+        @email_01  = 'john_smith@gmail.net'; @password_01 = "123456"
+        @email_02  = 'maria-souza@net.net' ; @password_02 = "1234567890"
+        @email_03  = 'ana.lima@net.com.br' ; @password_03 = "abdcef-2015"
+        @user_01   = User.create( email: @email_01, password: @password_01 )
+        @user_02   = User.create( email: @email_02, password: @password_02 )
+        @user_03   = User.create( email: @email_03, password: @password_03 )
+        @result_01 = User.authenticate(@user_01.email, @user_01.password)
+        @result_02 = User.authenticate(@user_02.email, @user_02.password)
+        @result_03 = User.authenticate(@user_03.email, @user_03.password)
+       end
+      it "returns Arrays" do
+        expect(@result_01).to be_kind_of(Array)
+        expect(@result_02).to be_kind_of(Array)
+        expect(@result_03).to be_kind_of(Array)
       end
-      it "returns User instances" do
-        expect(User.authenticate(@user_01.email, @user_01.password)).to be_kind_of(User)
-        expect(User.authenticate(@user_02.email, @user_02.password)).to be_kind_of(User)
-        expect(User.authenticate(@user_03.email, @user_03.password)).to be_kind_of(User)
-      end
-      it "returns User records, with correct attributes" do
-        user = User.authenticate(@user_01.email, @user_01.password)
-        expect(user.email).to    eq @email_01
-        expect(user.password).to eq @password_01
-        expect(user.attempts).to eq @attempts
+      it "returns Array, with correct values" do
+        expect(@result_01[00]).to eq :notice
+        expect(@result_01[01]).to eq "Bem vindo #{@email_01}!"
       end
       it "returns failed_attempts equal to zero" do
-        expect(User.authenticate(@user_01.email, @user_01.password).failed_attempts).to eq 0
+        expect(User.find_by_email(@user_01.email).failed_attempts).to eq 0
       end
       context 'and wrong password' do
         before :each do
           @email = 'john_smith@gmail.net'; @password = "123456"
           @user  = User.create( email: @email, password: @password )
+          @result = User.authenticate(@user.email, "000000")
         end
-        it "returns User instance" do
-          expect(User.authenticate(@user.email, "000000")).to be_kind_of(User)
+        it "returns an Array" do
+          expect(@result).to be_kind_of(Array)
         end
         it "returns failed_attempts greater then zero" do
-          expect(User.authenticate(@user.email, "000000").failed_attempts).to be > 0
+          expect(User.find_by_email(@user.email).failed_attempts).to be > 0
         end
-        it "returns failed_attempts incrementally from 0 to 5" do
-          expect(User.authenticate(@user.email, "000000").failed_attempts).to eq 1
-          expect(User.authenticate(@user.email, "000000").failed_attempts).to eq 2
-          expect(User.authenticate(@user.email, "000000").failed_attempts).to eq 3
-          expect(User.authenticate(@user.email, "000000").failed_attempts).to eq 4
-          expect(User.authenticate(@user.email, "000000").failed_attempts).to eq 5
+        it "returns failed_attempts incrementally from 2 to 5" do
+          User.authenticate(@user.email, '000000')
+          expect(User.find_by_email(@user.email).failed_attempts).to eq 2
+          User.authenticate(@user.email, '000000')
+          expect(User.find_by_email(@user.email).failed_attempts).to eq 3
+          User.authenticate(@user.email, '000000')
+          expect(User.find_by_email(@user.email).failed_attempts).to eq 4
+          User.authenticate(@user.email, '000000')
+          expect(User.find_by_email(@user.email).failed_attempts).to eq 5
         end
       end
     end
     context 'when invalid parameters' do
       context "and at least one parameter isn't present" do
-        it "returns nil" do
-          user = User.authenticate( nil, nil )
-          expect(user).to be_nil
+        it "returns :error, Usuario ou senha Invalida" do
+          result = User.authenticate( nil, nil )
+          expect(result[0]).to eq :error
+          expect(result[1]).to eq "Usuário ou senha inválida."
         end
       end
       context "and user doesn't exist" do
-        it "returns nil" do
+        it "returns :error, Usuario ou senha Invalida" do
           email = 'john_smith@gmail.net'; password = "123456"
           User.create( email: 'sergio@gmail.com', password: password )
           result = User.authenticate( email, password )
-          expect(result).to be_nil
+          expect(result[0]).to eq :error
+          expect(result[1]).to eq "Usuário ou senha inválida."
         end
       end
     end
