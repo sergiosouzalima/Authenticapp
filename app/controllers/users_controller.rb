@@ -26,25 +26,6 @@ class UsersController < ApplicationController
     flash[flash_key] = message
     session[:user_id] = User.find_by_email(params[:user][:email]).id if flash_key == :notice
     redirect_to root_url
-    #user = User.authenticate(params[:user][:email], params[:user][:password])
-    #if user && user.password == params[:user][:password] && user.failed_attempts < user.attempts
-    #  session[:user_id] = user.id
-    #  flash[:notice] = "Bem vindo #{user.email}!"
-    #else
-    #  message_to_user = "Usuário ou senha inválida."
-    #  if user
-    #    if user.failed_attempts >= user.attempts
-    #      attempts_info = "Usuário #{user.email} bloqueado!"
-    #      flash[:error] = attempts_info
-    #    else
-    #      attempts_info = "Restam #{user.failed_attempts}/#{user.attempts} tentativas"
-    #      flash[:error] = message_to_user + ' ' + attempts_info
-    #    end
-    #  else
-    #    flash[:error] = message_to_user
-    #  end
-    #end
-    #redirect_to root_url
   end
 
   private

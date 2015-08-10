@@ -37,19 +37,6 @@ class User < ActiveRecord::Base
       end
     end
     return result
-
-=begin
-    return nil if email.nil? || password.nil?
-    user = nil
-    if ( user = find_by_email(email) )
-      if user.password == password && user.failed_attempts < user.attempts
-        user.update failed_attempts: 0
-      else
-        user.update failed_attempts: user.failed_attempts + 1
-      end
-    end
-    return user
-=end
   end
 
 end
