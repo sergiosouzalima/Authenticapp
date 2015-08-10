@@ -25,14 +25,14 @@ the login process.
 Here we offer 5 attempts to the user to login at this website. The user is
 blocked if this 5 attempts is reached.
 
-When the user is blocked a message warning to the user that he/she is blocked is
-shown.
+When the user is blocked, a message is shown warning to the user that
+he/she is blocked.
 
 At each invalid login, the invalid login counter is increased by 1. Therefore,
-the website records each attempt to enter using invalid email or password.
+the website records any attempts to login using invalid email or password.
 
 When the user enters using appropriate email and password, the invalid login
-counter turns to zero.
+counter, turns to zero.
 
 Hence, the counter is prepared to be increased again by the next time, in case
 the user make login mistakes.
